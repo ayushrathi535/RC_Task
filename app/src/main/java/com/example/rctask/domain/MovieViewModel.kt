@@ -1,41 +1,26 @@
 package com.example.rctask.domain
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rctask.Utils.Resource
+import androidx.paging.cachedIn
 import com.example.rctask.data.repo.MovieRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.rctask.data.remote.entity.Result
 
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(private val repo: MovieRepo) : ViewModel() {
+class MovieViewModel @Inject constructor( private val repo: MovieRepo) : ViewModel() {
 
 
     private val _popularMovies = MutableLiveData<List<Result>>()
     val popularMovies: LiveData<List<Result>>
         get() = _popularMovies
 
-    init {
-        getPopularMovies()
-    }
-    fun getPopularMovies() {
-        viewModelScope.launch {
-            repo.getPopularMovies().let { response ->
-                if (response.isSuccessful) {
-                    _popularMovies.postValue(response.body()?.results)
-                } else {
-                    Log.e("error-->", "${response.code()}")
-                }
 
-            }
-        }
-    }
+    val moviesList = repo.getPopularMovies().cachedIn(viewModelScope)
 
 //    fun getPopularMovies() {
 //        viewModelScope.launch {

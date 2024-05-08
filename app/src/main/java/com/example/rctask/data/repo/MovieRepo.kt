@@ -1,14 +1,19 @@
 package com.example.rctask.data.repo
 
-import com.example.rctask.Utils.Resource
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.liveData
 import com.example.rctask.data.api.ApiService
-import com.example.rctask.data.remote.entity.PopularMovie
-import retrofit2.Response
+import com.example.rctask.paging.MoviePagingSource
 import javax.inject.Inject
 
 
 class MovieRepo @Inject constructor(private val apiService: ApiService) {
 
-    suspend fun getPopularMovies()= apiService.getPopularMovies()
+    fun getPopularMovies() = Pager(
+        config = PagingConfig(pageSize = 20, maxSize = 100),
+        pagingSourceFactory = { MoviePagingSource(apiService) }
+    ).liveData
+
 
 }

@@ -147,10 +147,12 @@ class MainActivity : AppCompatActivity() {
                 Log.d("status--->", "permission grnt by user")
                 getUserLocation()
             } else {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                val uri = Uri.fromParts("package",this.packageName, null)
-                intent.data = uri
-                startActivity(intent)
+
+
+//                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+//                val uri = Uri.fromParts("package",this.packageName, null)
+//                intent.data = uri
+//                startActivity(intent)
             }
         }
     }

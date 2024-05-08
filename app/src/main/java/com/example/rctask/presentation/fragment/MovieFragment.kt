@@ -8,13 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.rctask.Utils.Resource
+
+import com.example.rctask.adapters.LoaderAdapter
 import com.example.rctask.adapters.MovieAdapter
 import com.example.rctask.databinding.FragmentMovieBinding
 import com.example.rctask.domain.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import com.example.rctask.data.remote.entity.Result
+
 
 
 @AndroidEntryPoint
@@ -27,8 +27,6 @@ class MovieFragment : Fragment() {
     private val movieViewModel: MovieViewModel by viewModels()
 
     private lateinit var myAdapter: MovieAdapter
-
-    private var movieList: List<Result> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,12 +49,16 @@ class MovieFragment : Fragment() {
 
     private fun setUpViewModel() {
 
-        movieViewModel.popularMovies.observe(viewLifecycleOwner) { movieList ->
-            Log.e("movies--->", movieList.size.toString())
-            this.movieList = movieList
-            myAdapter.differ.submitList(movieList)
-
+        movieViewModel.moviesList.observe(viewLifecycleOwner){result->
+         //  this.movieList = result
+            myAdapter.submitData(viewLifecycleOwner.lifecycle,result)
         }
+//        movieViewModel.popularMovies.observe(viewLifecycleOwner) { movieList ->
+//            Log.e("movies--->", movieList.size.toString())
+//            this.movieList = movieList
+//            myAdapter.differ.submitList(movieList)
+//
+//        }
     }
 
 
@@ -67,10 +69,13 @@ class MovieFragment : Fragment() {
         binding.recycler.apply {
 
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = myAdapter
+            adapter = myAdapter.withLoadStateHeaderAndFooter(
+                header = LoaderAdapter(),
+                footer = LoaderAdapter()
+            )
         }
 
-        myAdapter.differ.submitList(this.movieList)
+     //   myAdapter.differ.submitList(this.movieList)
 
     }
 
